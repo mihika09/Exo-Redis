@@ -1,21 +1,3 @@
-"""import socket
-
-HOST = "127.0.0.1"
-PORT = 15000
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-	s.bind((HOST, PORT))
-	s.listen()
-	conn, addr = s.accept()
-	with conn:
-		print('Connected by: {}\nSocket object: {}'.format(addr, conn))
-		while True:
-			data = conn.recv(1024)
-			if not data:
-				break;
-			print("data: ", data.decode())
-"""
-
 import asyncio
 
 HOST = "127.0.0.1"
@@ -28,16 +10,29 @@ async def exo_redis(reader, writer):
 		if not data:
 			break;
 		print("Data: ", data)
-		print("String data: ", str(data.decode()))
-		writer.write("Yellow!".encode())
+		response = "+OK\r\n"
+		print("response: ", response)
+		writer.write(response.encode())
 		await writer.drain()
 
 	writer.close()
 
 
-async def main():
-	server = await asyncio.start_server(exo_redis, HOST, PORT)
-	await server.serve_forever()
+
+def start_server():
+	loop = asyncio.get_event_loop()
+	coro = asyncio.start_server(exo_redis, HOST, PORT)
+	server = loop.run_until_complete(coro)
+	print("Serving on ", HOST, "port: ", PORT)
+	try:
+		loop.run_forever()
+	except KeyboardInterrupt:
+		print("\nShutting Down Server...\n")
+	finally:
+		server.close()
+		loop.run_until_complete(server.wait_closed())
+		loop.close()
 
 
-asyncio.run(main())
+if __name__ == '__main__':
+	start_server()
