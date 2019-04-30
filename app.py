@@ -1,3 +1,9 @@
+"""if data[0] == '*':
+				response = await command_parser(reader, data[1:])
+
+			else:
+			response = "-ERR invalid command\r\n".encode()"""
+
 import asyncio
 
 HOST = "127.0.0.1"
@@ -5,18 +11,21 @@ PORT = 15000
 
 
 async def exo_redis(reader, writer):
-	while True:
-		data = await reader.read(1024)
-		if not data:
-			break;
-		print("Data: ", data)
-		response = "+OK\r\n"
-		print("response: ", response)
-		writer.write(response.encode())
-		await writer.drain()
 
-	writer.close()
+	try:
+		while True:
+			data = await reader.readuntil(b'\r\n')
+			if not data:
+				break
+			print("Data: ", data)
+			response = "+OK\r\n"
+			writer.write(response.encode())
+			await writer.drain()
 
+		writer.close()
+
+	except asyncio.streams.IncompleteReadError:
+		pass
 
 
 def start_server():
