@@ -19,11 +19,11 @@ async def exo_redis(reader, writer):
 			if not data:
 				break
 			print("Data: ", data)
-			if data[0] == '*':
+			if data[0] != '*':
 				response = await command_parser(reader, data[1:])
 
 			else:
-				response = "-ERR invalid command\r\n".encode()
+				response = "-ERR invalid command\r\n"
 			# response = "+OK\r\n"
 			try:
 				writer.write(response.encode())
