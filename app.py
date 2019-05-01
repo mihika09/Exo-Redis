@@ -24,7 +24,7 @@ async def exo_redis(reader, writer):
 
 			else:
 				response = "-ERR invalid command\r\n"
-			# response = "+OK\r\n"
+
 			try:
 				writer.write(response.encode())
 				await writer.drain()

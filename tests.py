@@ -5,12 +5,22 @@ r = redis.Redis(
 	port=15000
 )
 
-r.set('foo', 1)
+r.set('foo', 'bar')
 
-v = r.set('bar', '1')
-
-"""v = r.get('foo')
+v = r.get('foo')
 print(v)
 
-r.save()
+v = r.getbit('foo', 0)
+print(v)
+
+v = r.getbit('foo', 3)
+print(v)
+
+v = r.getbit('foo', 6)
+print(v)
+
+v = r.getbit('foo', 50)
+print(v)
+
+"""r.save()
 print(v)"""
