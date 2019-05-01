@@ -5,6 +5,7 @@
 			response = "-ERR invalid command\r\n".encode()"""
 
 import asyncio
+from parser import command_parser
 
 HOST = "127.0.0.1"
 PORT = 15000
@@ -18,9 +19,18 @@ async def exo_redis(reader, writer):
 			if not data:
 				break
 			print("Data: ", data)
-			response = "+OK\r\n"
-			writer.write(response.encode())
-			await writer.drain()
+			if data[0] == '*':
+				response = await command_parser(reader, data[1:])
+
+			else:
+				response = "-ERR invalid command\r\n".encode()
+			# response = "+OK\r\n"
+			try:
+				writer.write(response.encode())
+				await writer.drain()
+
+			except ConnectionResetError:
+				pass
 
 		writer.close()
 
