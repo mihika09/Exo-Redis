@@ -26,15 +26,18 @@ async def exo_redis(reader, writer):
 				response = "-ERR invalid command\r\n"
 
 			try:
-				writer.write(response.encode())
+				print("response: ", response)
+				writer.write(response.encode('utf-8'))
 				await writer.drain()
 
 			except ConnectionResetError:
+				print("^_^_^_^_^_^_^_^_^_^")
 				pass
 
 		writer.close()
 
 	except asyncio.streams.IncompleteReadError:
+		print("*^_^_^_^_^_^_^_^_^_^")
 		pass
 
 
