@@ -11,6 +11,29 @@ HOST = "127.0.0.1"
 PORT = 15000
 
 
+"""async def exo_redis(reader, writer):
+	try:
+		while True:
+			data = 1
+			while data:
+				data = await reader.read(n=-1)
+				print("data: ", data)
+
+			if not data:
+				break
+
+			print("data: ", data)
+			response = ":0\r\n"
+			print("response: ", response)
+			writer.write(response.encode())
+			await writer.drain()
+
+		writer.close()
+
+	except:
+		pass"""
+
+
 async def exo_redis(reader, writer):
 
 	try:

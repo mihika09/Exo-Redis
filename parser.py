@@ -1,4 +1,8 @@
+import pprint
+import bisect
+
 DB = {}
+SORTED_SETS = {}
 
 
 async def read_command(reader):
@@ -113,10 +117,56 @@ async def get_parser(reader, n):
 
 	key = await read_command(reader)
 	if key in DB:
+		if key in SORTED_SETS:
+			raise Exception('Invalid command')
+
 		value = DB[key]
 		return "${}\r\n{}\r\n".format(len(value), value)
 	else:
 		return "$-1\r\n"
+
+
+async def zadd_parser(reader, n):
+	if n != 3:
+		raise Exception('Invalid command')
+
+	key = await read_command(reader)
+	score = await read_command(reader)
+	element_name = await read_command(reader)
+
+	print("Key: {}, Score: {}, Element_name: {}".format(key, score, element_name))
+
+	if key not in DB:
+		DB[key] = {element_name: score}
+		SORTED_SETS[key] = {score: [element_name]}
+
+	else:
+		if key not in SORTED_SETS:
+			raise Exception('Invalid command')
+
+		if element_name in DB[key]:  # update the score for the element in DB and SORTED_SETS
+			old_score = DB[key][element_name]
+			if old_score != score:
+				DB[key][element_name] = score
+				SORTED_SETS[key][old_score].remove(element_name)
+				if score in SORTED_SETS[key]:
+					bisect.insort(SORTED_SETS[key][score], element_name)
+					# SORTED_SETS[key][score].append(element_name)
+				else:
+					SORTED_SETS[key][score] = [element_name]
+
+		else:
+			DB[key][element_name] = score
+			if score in SORTED_SETS[key]:
+				bisect.insort(SORTED_SETS[key][score], element_name)
+				# SORTED_SETS[key][score].append(element_name)
+			else:
+				SORTED_SETS[key][score] = [element_name]
+
+	print("DB")
+	pprint.pprint(DB)
+	print("SORTED_SETS")
+	pprint.pprint(SORTED_SETS)
 
 
 async def command_parser(reader, n):
@@ -144,6 +194,11 @@ async def command_parser(reader, n):
 		elif redcom == 'SETBIT':
 			response = await setbit_parser(reader, n)
 			return response
+
+		elif redcom == 'ZADD':
+			print("***Inside ZADD parser***")
+			response = await zadd_parser(reader, n)
+			return ":1\r\n"
 
 		else:
 			return ':0\r\n'
