@@ -1,9 +1,3 @@
-"""if data[0] == '*':
-				response = await command_parser(reader, data[1:])
-
-			else:
-			response = "-ERR invalid command\r\n".encode()"""
-
 import asyncio
 from parser import command_parser
 
@@ -42,7 +36,8 @@ async def exo_redis(reader, writer):
 			if not data:
 				break
 			print("Data: ", data)
-			if data[0] != '*':
+			data = data.decode()
+			if data[0] == '*':
 				response = await command_parser(reader, data[1:])
 
 			else:

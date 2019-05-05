@@ -27,8 +27,18 @@ print(v)"""
 v = r.get('abc')
 print(v)
 
+v = r.setbit('abc', 9, 1)
+print(v)
+
+v = r.setbit('abc', 15, 1)
+print(v)
+
+v = r.get('abc')
+print("----", v)
+
 v = r.setbit('abc', 6, 1)
 print(v)
+
 
 v = r.get('abc')
 print(v)
@@ -38,7 +48,7 @@ print(v)
 
 v = r.get('abc')
 print(v)
-# print(v.decode('utf-8'))
+print(v.decode('utf-8'))
 
 v = r.setbit('qwe', 1, 1)
 print(v)
@@ -47,14 +57,26 @@ v = r.setbit('qwe', 7, 1)
 print(v)
 
 v = r.get('qwe')
+print(v)
+
+v = r.setbit('qwe', 7, 0)
+print(v)
+
+v = r.get('qwe')
+print(v)
+
+v = r.setbit('qwe', 7, 0)
+print(v)
+
+v = r.get('qwe')
 print(v)"""
 
-
-r.zadd('abc', {"a": 1})
-r.zadd('abc', {"b": 2})
-r.zadd('abc', {"c": 3})
-r.zadd('abc', {"apple": 3})
-r.zadd('abc', {"apple": 2})
+print(r.zadd('abcd', {"a": 1}))
+print(r.zadd('abcd', {"b": 2}))
+print(r.zadd('abcd', {"c": 3}))
+print(r.zadd('abcd', {"apple": 3}))
+print(r.zadd('abcd', {"apple": 2}))
+print(r.zcard('abcd'))
 
 """r.save()
 print(v)"""

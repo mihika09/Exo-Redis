@@ -139,6 +139,7 @@ async def zadd_parser(reader, n):
 	if key not in DB:
 		DB[key] = {element_name: score}
 		SORTED_SETS[key] = {score: [element_name]}
+		response = ":1\r\n"
 
 	else:
 		if key not in SORTED_SETS:
@@ -155,6 +156,8 @@ async def zadd_parser(reader, n):
 				else:
 					SORTED_SETS[key][score] = [element_name]
 
+			response = ":0\r\n"
+
 		else:
 			DB[key][element_name] = score
 			if score in SORTED_SETS[key]:
@@ -163,10 +166,28 @@ async def zadd_parser(reader, n):
 			else:
 				SORTED_SETS[key][score] = [element_name]
 
+			response = ":1\r\n"
+
 	print("DB")
 	pprint.pprint(DB)
 	print("SORTED_SETS")
 	pprint.pprint(SORTED_SETS)
+
+	return response
+
+
+async def zcard_parser(reader, n):
+
+	if n != 1:
+		raise Exception('Invalid command')
+
+	key = await read_command(reader)
+
+	if key not in SORTED_SETS:
+		raise Exception('Invalid command')
+
+	n = len(DB[key])
+	return ":{}\r\n".format(n)
 
 
 async def command_parser(reader, n):
@@ -198,7 +219,11 @@ async def command_parser(reader, n):
 		elif redcom == 'ZADD':
 			print("***Inside ZADD parser***")
 			response = await zadd_parser(reader, n)
-			return ":1\r\n"
+			return response
+
+		elif redcom == 'ZCARD':
+			response = await zcard_parser(reader, n)
+			return response
 
 		else:
 			return ':0\r\n'
