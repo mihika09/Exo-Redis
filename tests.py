@@ -5,71 +5,36 @@ r = redis.Redis(
 	port=15000
 )
 
-"""r.set('foo', 'bar')
+print("\n***SET and GET***\n")
+
+print(r.set('foo', 'bar'))
 
 v = r.get('foo')
 print(v)
 
-v = r.getbit('foo', 0)
-print(v)
 
-v = r.getbit('foo', 3)
-print(v)
-
-v = r.getbit('foo', 6)
-print(v)
-
-v = r.getbit('foo', 50)
-print(v)"""
-
-"""r.set('abc', 'A')
+r.set('abc', '1010')
+r.set('def', 'amazing')
 
 v = r.get('abc')
 print(v)
 
-v = r.setbit('abc', 9, 1)
+v = r.get('def')
 print(v)
 
-v = r.setbit('abc', 15, 1)
-print(v)
+print("\n***SETBIT and GETBIT***\n")
 
-v = r.get('abc')
-print("----", v)
+print("setbit: ", r.setbit("test", 1, 1))
+print("setbit: ", r.setbit("test", 7, 1))
+print("getbit: ", r.getbit("test", 7))
+print("get: ", r.get("test"))
+print("setbit: ", r.setbit("test", 7, 0))
+print("getbit: ", r.getbit("test", 7))
+print("get: ", r.get("test"))
+print("setbit: ", r.setbit("test", 8, 1))
+print("get: ", r.get("test"))
 
-v = r.setbit('abc', 6, 1)
-print(v)
-
-
-v = r.get('abc')
-print(v)
-
-v = r.setbit('abc', 8, 1)
-print(v)
-
-v = r.get('abc')
-print(v)
-print(v.decode('utf-8'))
-
-v = r.setbit('qwe', 1, 1)
-print(v)
-
-v = r.setbit('qwe', 7, 1)
-print(v)
-
-v = r.get('qwe')
-print(v)
-
-v = r.setbit('qwe', 7, 0)
-print(v)
-
-v = r.get('qwe')
-print(v)
-
-v = r.setbit('qwe', 7, 0)
-print(v)
-
-v = r.get('qwe')
-print(v)"""
+print("\n***Z - COMMANDS***\n")
 
 print(r.zadd('abcd', {"a": 1}))
 print(r.zadd('abcd', {"b": 2}))
@@ -77,6 +42,7 @@ print(r.zadd('abcd', {"c": 3}))
 print(r.zadd('abcd', {"apple": 3}))
 print(r.zadd('abcd', {"apple": 2}))
 print(r.zcard('abcd'))
+print(r.zcount('abcd', 1, 3))
 
 """r.save()
 print(v)"""
