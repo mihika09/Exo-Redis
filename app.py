@@ -1,34 +1,39 @@
 import asyncio
-from parser import command_parser
+from RESP_parser import RESP_parser
+from command_evaluator import commands_eval
 
 HOST = "127.0.0.1"
 PORT = 15000
 
 
-"""async def exo_redis(reader, writer):
+async def exo_redis(reader, writer):
 	try:
 		while True:
-			data = 1
-			while data:
-				data = await reader.read(n=-1)
-				print("data: ", data)
+			data = await reader.read(2048)
 
 			if not data:
 				break
 
-			print("data: ", data)
-			response = ":0\r\n"
+			print("\nSending")
+			parsed_input = RESP_parser(data.decode())
+			if parsed_input is None:
+				response = "-ERR Invalid Command\r\n"
+
+			else:
+				response = commands_eval(parsed_input)
+
+			# response = "+OK\r\n"
 			print("response: ", response)
 			writer.write(response.encode())
 			await writer.drain()
 
 		writer.close()
 
-	except:
-		pass"""
+	except asyncio.streams.IncompleteReadError:
+		pass
 
 
-async def exo_redis(reader, writer):
+"""async def exo_redis(reader, writer):
 
 	try:
 		while True:
@@ -56,7 +61,7 @@ async def exo_redis(reader, writer):
 
 	except asyncio.streams.IncompleteReadError:
 		print("*^_^_^_^_^_^_^_^_^_^")
-		pass
+		pass"""
 
 
 def start_server():
