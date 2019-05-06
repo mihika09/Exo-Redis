@@ -1,6 +1,6 @@
 import asyncio
 from RESP_parser import RESP_parser
-from command_evaluator import commands_eval
+from evaluator import commands_eval
 
 HOST = "127.0.0.1"
 PORT = 15000
