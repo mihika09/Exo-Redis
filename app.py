@@ -14,7 +14,6 @@ async def exo_redis(reader, writer):
 			if not data:
 				break
 
-			print("\nSending")
 			parsed_input = RESP_parser(data.decode())
 			if parsed_input is None:
 				response = "-ERR Invalid Command\r\n"
@@ -22,8 +21,6 @@ async def exo_redis(reader, writer):
 			else:
 				response = commands_eval(parsed_input)
 
-			# response = "+OK\r\n"
-			print("response: ", response)
 			writer.write(response.encode())
 			await writer.drain()
 

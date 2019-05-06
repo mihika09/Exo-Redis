@@ -115,7 +115,11 @@ def zadd_evaluator(command):
 		return None
 
 	key = command[0]
-	score = command[1]
+	try:
+		score = int(command[1])
+	except:
+		return None
+
 	element_name = command[2]
 
 	print("Key: {}, Score: {}, Element_name: {}".format(key, score, element_name))
@@ -173,8 +177,29 @@ def zcard_evaluator(command):
 	return ":{}\r\n".format(n)
 
 
-def zcount_evaluator():
-	pass
+def zcount_evaluator(command):
+	if len(command) != 3:
+		return None
+
+	key, min, max = command
+
+	if key not in SORTED_SETS:
+		return None
+
+	try:
+		min = int(min)
+		max = int(max)
+		count = 0
+
+		for i in DB[key]:
+			score = DB[key][i]
+			if min <= score <= max:
+				count += 1
+
+		return ":{}\r\n".format(count)
+
+	except:
+		return None
 
 
 def zrange_evaluator():
